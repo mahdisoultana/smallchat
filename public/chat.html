@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>simple chat js</title>
+  </head>
+  <body>
+    <h1 class="text-center text-3xl font-mono underline-2">
+      Hello form simple chat👵
+    </h1>
+    <ul class="p-4 max-w-xl w-full m-auto divide-y divide-slate-200"></ul>
+    <form
+      class="bg-gray-100 rounded-lg shadow-lg max-w-xl w-full min-h-3xl h-full p-4 m-auto"
+    >
+      <label for="msg"
+        ><span>Enter your Message</span>
+        <input type="text" id="msg" class="inline-block w-full p-2 my-4" />
+      </label>
+      <button
+        class="inline-block p-3 w-full rounded-lg text-lg font-bold text-white font-mono bg-blue-500"
+        submit
+      >
+        Send
+      </button>
+    </form>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io("http://localhost:9000");
+      //   socket.on("messageFromServer", (msg) => {
+      //     console.log(msg);
+      //     socket.emit("messageFromClient", { msg: "heloo from client" });
+      //   });
+      const ul = document.querySelector("ul");
+      const form = document.querySelector("form");
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        console.log("helo");
+        const msg = e.target.msg;
+
+        msg.value && socket.emit("msg", { msg: msg.value });
+        msg.value = "";
+      });
+
+      socket.on("addMsg", (data) => {
+        data?.msg && addMsg(data);
+      });
+      function addMsg(data) {
+        const li = document.createElement("li");
+        li.className = "text-xl font-bold my-4 py-2";
+        li.innerText = data.msg;
+        ul.append(li);
+      }
+    </script>
+  </body>
+</html>
